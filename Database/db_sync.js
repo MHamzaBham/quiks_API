@@ -1,11 +1,11 @@
 // Currently made a book table using the query
 
 // CREATE TABLE Books (
-//     book_id INT PRIMARY KEY,
-//     title VARCHAR(255),
+//     book_id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
+//     title VARCHAR(255) UNIQUE,
 //     excerpt TEXT,
 //     rating FLOAT, 
-//     duration INT
+//     duration INT,
 //     content TEXT,
 //     audio_data LONGBLOB,
 //     author_id INT,
