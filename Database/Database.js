@@ -29,4 +29,15 @@ function getFromTable(columnNames, table) {
     });
 }
 
-module.exports = { con, getFromTable };
+function insertData(query, values) { // This function will be used in to insert data. Write query and values in controller and pass to this function
+    con.query(query, values, (err, results) => {
+        if (err) {
+            console.error('Error executing query', err);
+            return err;
+        } else {
+            return results;
+        }
+    });
+}
+
+module.exports = { con, getFromTable, insertData };
