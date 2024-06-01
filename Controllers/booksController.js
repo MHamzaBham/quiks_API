@@ -1,12 +1,24 @@
 const Database = require("../Database/Database");
 
+// get all the books
 const getBooks = async (req, res) => {
   let data = await Database.getFromTable("*", "Books");
   res.json({ books: data });
 };
 
-const getFilteredBooks = async (req, res) => {};
+// get one book using id
+const getBook = async (req, res) => {
+  const id = req.params.id
+  try {
+    results = await Database.getById('books', id);
+    res.json({ message: "success!", results: results });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "failure!", results: error });
+  }
+}
 
+// add a book by putting data into the request body
 const addBook = async (req, res) => {
   const {
     title,
@@ -27,8 +39,7 @@ const addBook = async (req, res) => {
   ];
 
   try {
-    results = Database.insertData(query, values);
-    console.log(results);
+    results = await Database.insertData(query, values);
     res.json({ message: "success!", results: results });
   } catch (error) {
     console.log(error);
@@ -36,4 +47,19 @@ const addBook = async (req, res) => {
   }
 };
 
-module.exports = { getBooks, addBook, getFilteredBooks };
+// delete a book using id
+const deleteBook = async (req, res) => {
+  const id = req.params.id;
+  try {
+    results = await Database.deleteById('books', id);
+    res.json({message: "success!", results: results});
+  }
+  catch (error) {
+    console.log(error);
+    res.json({message: "failure!", results: error});
+  }
+}
+
+const getFilteredBooks = async (req, res) => {};
+
+module.exports = { getBooks, addBook, getFilteredBooks, deleteBook, getBook };
