@@ -131,4 +131,7 @@ function deleteById(table, id) {
   return promise;
 }
 
-module.exports = { con, getFromTable, insertData, getFromMultipleTables };
+
+
+module.exports = { con, getFromTable, insertData, getFromMultipleTables, getById, deleteById };
+
