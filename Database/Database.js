@@ -50,6 +50,8 @@ function getFromTable(
 
 // generic function to get the data from multiple tables using joins
 // can specifiy the fitering conditons. Study params
+// generic function to get the data from multiple tables using joins
+// can specifiy the fitering conditons. Study params
 function getFromMultipleTables(
   baseTable,
   joinTable,
