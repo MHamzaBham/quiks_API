@@ -48,7 +48,8 @@ function getFromTable(
   return promise;
 }
 
-
+// generic function to get the data from multiple tables using joins
+// can specifiy the fitering conditons. Study params
 function getFromMultipleTables(
   baseTable,
   joinTable,
@@ -64,7 +65,6 @@ function getFromMultipleTables(
   const queryString = `SELECT ${columnNames} FROM ${baseTable} ${joinType.toUpperCase()} JOIN ${joinTable} ON ${joinCondition} ${
     filterCondition ? `WHERE ${filterCondition}` : ""
   }`;
-  console.log("string", queryString);
 
   return getPromise((resolve, reject) => {
     con.query(queryString, async function (err, result, fields) {
@@ -78,7 +78,6 @@ function getFromMultipleTables(
     });
   });
 }
-
 
 function insertData(queryString, values) {
   // This function will be used in to insert data. Write query and values in controller and pass to this function
@@ -131,6 +130,5 @@ function deleteById(table, id) {
 
   return promise;
 }
-
 
 module.exports = { con, getFromTable, insertData, getFromMultipleTables };

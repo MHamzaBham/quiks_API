@@ -6,6 +6,7 @@ const getBooks = async (req, res) => {
   res.json({ books: data });
 };
 
+// get the filtered books based on author, title and rating
 const getFilteredBooks = async (req, res) => {
   const { author, title, rating } = req.body;
   console.log(req);
@@ -76,6 +77,5 @@ const deleteBook = async (req, res) => {
   }
 }
 
-const getFilteredBooks = async (req, res) => {};
 
 module.exports = { getBooks, addBook, getFilteredBooks, deleteBook, getBook };
