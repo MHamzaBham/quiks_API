@@ -31,8 +31,8 @@ const getBook = async (req, res) => {
     results = await Database.getById("books", id);
     res.json({ message: "success!", results: results });
   } catch (error) {
-    // console.log(error);
-    // res.json({ message: "failure!", results: error });
+    console.log(error);
+    res.json({ message: "failure!", results: error });
   }
 };
 
