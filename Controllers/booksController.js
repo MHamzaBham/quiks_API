@@ -2,7 +2,22 @@ const Database = require("../Database/Database");
 
 // get all the books
 const getBooks = async (req, res) => {
-  let data = await Database.getFromTable("*", "Books");
+  const data = await Database.getFromTable("*", "Books");
+  res.json({ books: data });
+};
+
+const getFilteredBooks = async (req, res) => {
+  const { author, title, rating } = req.body;
+  console.log(req);
+  console.log(req.params);
+  const data = await Database.getFromMultipleTables(
+    "Books",
+    "Users",
+    "inner",
+    "Books.author_id=Users.id",
+    `Users.name="${author}" and Books.title="${title}" and cast(Books.rating as DECIMAL(2,1))=${rating}`,
+    "*"
+  );
   res.json({ books: data });
 };
 
@@ -17,6 +32,7 @@ const getBook = async (req, res) => {
     res.json({ message: "failure!", results: error });
   }
 }
+
 
 // add a book by putting data into the request body
 const addBook = async (req, res) => {
