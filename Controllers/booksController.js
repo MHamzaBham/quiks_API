@@ -1,11 +1,24 @@
 const Database = require("../Database/Database");
 
 const getBooks = async (req, res) => {
-  let data = await Database.getFromTable("*", "Books");
+  const data = await Database.getFromTable("*", "Books");
   res.json({ books: data });
 };
 
-const getFilteredBooks = async (req, res) => {};
+const getFilteredBooks = async (req, res) => {
+  const { author, title, rating } = req.body;
+  console.log(req);
+  console.log(req.params);
+  const data = await Database.getFromMultipleTables(
+    "Books",
+    "Users",
+    "inner",
+    "Books.author_id=Users.id",
+    `Users.name="${author}" and Books.title="${title}" and cast(Books.rating as DECIMAL(2,1))=${rating}`,
+    "*"
+  );
+  res.json({ books: data });
+};
 
 const addBook = async (req, res) => {
   const {
