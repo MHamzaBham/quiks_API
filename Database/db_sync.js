@@ -1,7 +1,7 @@
 // Currently made a book table using the query
 
 // CREATE TABLE Books (
-//     book_id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
+//     id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
 //     title VARCHAR(255) UNIQUE,
 //     excerpt TEXT,
 //     rating FLOAT, 
