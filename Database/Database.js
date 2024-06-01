@@ -3,7 +3,7 @@ const mysql = require("mysql2");
 // creates a connection with database
 const con = mysql.createConnection({
   host: process.env.HOST,
-  user: "root",
+  user: "quiks_admin",
   password: "",
   database: "quiks_db",
 });

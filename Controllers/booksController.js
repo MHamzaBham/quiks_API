@@ -52,7 +52,7 @@ const deleteBook = async (req, res) => {
   const id = req.params.id;
   try {
     results = await Database.deleteById('books', id);
-    res.json({message: "sucess!", results: results});
+    res.json({message: "success!", results: results});
   }
   catch (error) {
     console.log(error);
