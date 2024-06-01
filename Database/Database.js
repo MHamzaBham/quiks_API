@@ -133,4 +133,4 @@ function deleteById(table, id) {
 }
 
 
-module.exports = { con, getFromTable, insertData, getFromMultipleTables };
+module.exports = { con, getFromTable, insertData, getFromMultipleTables, getById, deleteById };
