@@ -6,17 +6,19 @@ const getBooks = async (req, res) => {
   res.json({ books: data });
 };
 
-// get the filtered books based on author, title and rating
+// get the filtered books based on author OR title OR rating
 const getFilteredBooks = async (req, res) => {
-  const { author, title, rating } = req.body;
-  console.log(req);
-  console.log(req.params);
+  const { author, title, rating } = req.query;
+  console.log(req.query);
+
   const data = await Database.getFromMultipleTables(
     "Books",
     "Users",
     "inner",
     "Books.author_id=Users.id",
-    `Users.name="${author}" and Books.title="${title}" and cast(Books.rating as DECIMAL(2,1))=${rating}`,
+    `${author ? `Users.name="${author}" and` : ""} ${
+      title ? `Books.title LIKE "%${title}%" and` : ""
+    } ${rating ? `cast(Books.rating as DECIMAL(2,1))>=${rating}` : ""}`,
     "*"
   );
   res.json({ books: data });
@@ -24,16 +26,15 @@ const getFilteredBooks = async (req, res) => {
 
 // get one book using id
 const getBook = async (req, res) => {
-  const id = req.params.id
+  const id = req.params.id;
   try {
-    results = await Database.getById('books', id);
+    results = await Database.getById("books", id);
     res.json({ message: "success!", results: results });
   } catch (error) {
     console.log(error);
     res.json({ message: "failure!", results: error });
   }
-}
-
+};
 
 // add a book by putting data into the request body
 const addBook = async (req, res) => {
@@ -68,14 +69,12 @@ const addBook = async (req, res) => {
 const deleteBook = async (req, res) => {
   const id = req.params.id;
   try {
-    results = await Database.deleteById('books', id);
-    res.json({message: "success!", results: results});
-  }
-  catch (error) {
+    results = await Database.deleteById("books", id);
+    res.json({ message: "success!", results: results });
+  } catch (error) {
     console.log(error);
-    res.json({message: "failure!", results: error});
+    res.json({ message: "failure!", results: error });
   }
-}
-
+};
 
 module.exports = { getBooks, addBook, getFilteredBooks, deleteBook, getBook };
