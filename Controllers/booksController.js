@@ -1,4 +1,5 @@
 const Database = require("../Database/Database");
+const slugify = require("slugify")
 
 // get all the books
 const getBooks = async (req, res) => {
@@ -46,6 +47,12 @@ const addBook = async (req, res) => {
     readingDuration,
     audioUrl,
   } = req.body;
+
+  const slug = slugify(title, {
+    lower: true
+  });
+  console.log(slug);
+
   const query = `INSERT INTO books (title, excerpt, rating, duration, content, audio_data) VALUES (?, ?, ?, ?, ?, ?)`;
   const values = [
     title,
