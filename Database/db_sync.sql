@@ -1,5 +1,6 @@
 --   Currently made a book table using the query
 
+-- User Tables
 CREATE TABLE Users (
     id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -8,19 +9,6 @@ CREATE TABLE Users (
     profile_pic VARCHAR(255),
     bio TEXT
 )
-
-CREATE TABLE Books (
-    id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) UNIQUE,
-    excerpt TEXT,
-    rating FLOAT,
-    duration INT,
-    content TEXT,
-    audio_data LONGBLOB,
-    author_id INT,
-    FOREIGN KEY (author_id) REFERENCES Users(id)
-);
-
 
 CREATE TABLE Roles (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -52,3 +40,51 @@ CREATE TABLE RolePermissions (
 -- ON DELETE CASCADE is used to specify that when a row is deleted from the parent table, all rows in the child table that reference the deleted row should also be deleted.
 
 --Also after cloning, make a .env file and copy env.example text to .env in your local machine
+
+-- Book and its related tables
+
+CREATE TABLE Book (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    text TEXT NOT NULL,
+    excerpt VARCHAR(255),
+    audio VARCHAR(255),
+    duration INT,
+    rating FLOAT,
+    author_id INT NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES Author(id) ON DELETE CASCADE -- one book can have one author
+);
+
+CREATE TABLE Author (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    bio TEXT,
+    no_of_books INT,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Category (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(255)
+);
+
+CREATE TABLE BookCategoryMapping (
+    category_id INT NOT NULL,
+    book_id INT NOT NULL,
+    PRIMARY KEY (category_id, book_id),
+    FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Bookmark (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    book_id INT NOT NULL,
+    user_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    bookmark_text TEXT,
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
