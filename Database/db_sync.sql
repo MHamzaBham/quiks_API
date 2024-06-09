@@ -88,3 +88,60 @@ CREATE TABLE Bookmark (
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE RecentVisited (
+    user_id INT NOT NULL,                         
+    book_id INT NOT NULL    
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Library (
+    id INT PRIMARY KEY AUTO_INCREMENT,           
+    user_id INT NOT NULL,                         
+    book_id INT NOT NULL,
+    library_name VARCHAR(255),           
+    library_description TEXT,            
+    privacy VARCHAR(50),      -- public, private etc..             
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+);
+
+CREATE TABLE LibraryBooksMapping (
+    library_id INT NOT NULL,           
+    book_id INT NOT NULL,
+    PRIMARY KEY (library_id,book_id)         
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+    FOREIGN KEY (library_id) REFERENCES Library(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE BookRating (
+    user_id INT NOT NULL,           
+    book_id INT NOT NULL,
+    count FLOAT NOT NULL,
+    PRIMARY KEY (user_id,book_id)         
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Review (
+    id INT PRIMARY KEY AUTO_INCREMENT,           
+    user_id INT NOT NULL,                         
+    book_id INT NOT NULL,                         
+    review_text TEXT NOT NULL,                    
+    date_time DATETIME NOT NULL,           
+    likes_count INT,                    
+    dislikes_count INT,                 
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE 
+);
+
+
+
+
+
+
