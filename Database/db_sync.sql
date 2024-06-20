@@ -17,10 +17,10 @@ CREATE TABLE Roles (
 
 -- user can have many roles as user and author 
 CREATE TABLE UserRoles (
-    user_id INT
-    role_id INT
-    PRIMARY KEY (user_id, role_id)
-    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+    user_id INT,
+    role_id INT,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES Roles(id) ON DELETE CASCADE
 )
 
@@ -43,7 +43,7 @@ CREATE TABLE RolePermissions (
 
 -- Book and its related tables
 
-CREATE TABLE Book (
+CREATE TABLE Book(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     slug VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -92,8 +92,8 @@ CREATE TABLE Bookmark (
 
 CREATE TABLE RecentVisited (
     user_id INT NOT NULL,                         
-    book_id INT NOT NULL    
-    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+    book_id INT NOT NULL, 
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
 );
 
@@ -104,16 +104,16 @@ CREATE TABLE Library (
     book_id INT NOT NULL,
     library_name VARCHAR(255),           
     library_description TEXT,            
-    privacy VARCHAR(50),      -- public, private etc..             
-    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+    privacy VARCHAR(50),                   
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
 );
 
 CREATE TABLE LibraryBooksMapping (
     library_id INT NOT NULL,           
     book_id INT NOT NULL,
-    PRIMARY KEY (library_id,book_id)         
-    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+    PRIMARY KEY (library_id,book_id),         
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
     FOREIGN KEY (library_id) REFERENCES Library(id) ON DELETE CASCADE
 );
 
@@ -122,8 +122,8 @@ CREATE TABLE BookRating (
     user_id INT NOT NULL,           
     book_id INT NOT NULL,
     count FLOAT NOT NULL,
-    PRIMARY KEY (user_id,book_id)         
-    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
+    PRIMARY KEY (user_id,book_id),         
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
@@ -138,6 +138,16 @@ CREATE TABLE Review (
     dislikes_count INT,                 
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE 
+);
+
+CREATE TABLE book_chapters (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT NOT NULL,
+    audio_url VARCHAR(255),
+    chapter_no INT NOT NULL,
+    text TEXT NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    FOREIGN KEY (book_id) REFERENCES Book(id)
 );
 
 
