@@ -149,6 +149,9 @@ CREATE TABLE book_chapters (
     slug VARCHAR(255) NOT NULL UNIQUE,
     FOREIGN KEY (book_id) REFERENCES Book(id)
 );
+-- remove the below fields/column from Book table.
+ALTER TABLE Book DROP COLUMN audio;
+ALTER TABLE Book DROP COLUMN text;
 
 
 
