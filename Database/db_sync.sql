@@ -40,7 +40,6 @@ CREATE TABLE RolePermissions (
 CREATE TABLE Author (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    bio TEXT,
     no_of_books INT,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
