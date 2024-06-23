@@ -1,17 +1,15 @@
---   Currently made a book table using the query
-
 -- User Tables
 CREATE TABLE Users (
-    id INT UNIQUE AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     age INT,
     profile_pic VARCHAR(255),
     bio TEXT
-)
+);
 
 CREATE TABLE Roles (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     role_name VARCHAR(255) NOT NULL UNIQUE
 );
 
@@ -22,10 +20,10 @@ CREATE TABLE UserRoles (
     PRIMARY KEY (user_id, role_id),
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES Roles(id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE Permissions (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     permission_name VARCHAR(255) NOT NULL UNIQUE
 );
 
@@ -37,27 +35,10 @@ CREATE TABLE RolePermissions (
     FOREIGN KEY (role_id) REFERENCES Roles(id) ON DELETE CASCADE,
     FOREIGN KEY (permission_id) REFERENCES Permissions(id) ON DELETE CASCADE
 );
--- ON DELETE CASCADE is used to specify that when a row is deleted from the parent table, all rows in the child table that reference the deleted row should also be deleted.
-
---Also after cloning, make a .env file and copy env.example text to .env in your local machine
 
 -- Book and its related tables
-
-CREATE TABLE Book(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    slug VARCHAR(255) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    text TEXT NOT NULL,
-    excerpt VARCHAR(255),
-    audio VARCHAR(255),
-    duration INT,
-    rating FLOAT,
-    author_id INT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES Author(id) ON DELETE CASCADE -- one book can have one author
-);
-
 CREATE TABLE Author (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     bio TEXT,
@@ -65,8 +46,20 @@ CREATE TABLE Author (
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Book (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    excerpt VARCHAR(255),
+    duration INT,
+    rating FLOAT,
+    image VARCHAR(255),
+    author_id INT NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES Author(id) ON DELETE CASCADE
+);
+
 CREATE TABLE Category (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255)
 );
@@ -80,7 +73,7 @@ CREATE TABLE BookCategoryMapping (
 );
 
 CREATE TABLE Bookmark (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     book_id INT NOT NULL,
     user_id INT NOT NULL,
     date_time DATETIME NOT NULL,
@@ -89,7 +82,6 @@ CREATE TABLE Bookmark (
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE RecentVisited (
     user_id INT NOT NULL,                         
     book_id INT NOT NULL, 
@@ -97,9 +89,8 @@ CREATE TABLE RecentVisited (
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE Library (
-    id INT PRIMARY KEY AUTO_INCREMENT,           
+    id INT AUTO_INCREMENT PRIMARY KEY,           
     user_id INT NOT NULL,                         
     book_id INT NOT NULL,
     library_name VARCHAR(255),           
@@ -112,24 +103,22 @@ CREATE TABLE Library (
 CREATE TABLE LibraryBooksMapping (
     library_id INT NOT NULL,           
     book_id INT NOT NULL,
-    PRIMARY KEY (library_id,book_id),         
+    PRIMARY KEY (library_id, book_id),         
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
     FOREIGN KEY (library_id) REFERENCES Library(id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE BookRating (
     user_id INT NOT NULL,           
     book_id INT NOT NULL,
     count FLOAT NOT NULL,
-    PRIMARY KEY (user_id,book_id),         
+    PRIMARY KEY (user_id, book_id),         
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE Review (
-    id INT PRIMARY KEY AUTO_INCREMENT,           
+    id INT AUTO_INCREMENT PRIMARY KEY,           
     user_id INT NOT NULL,                         
     book_id INT NOT NULL,                         
     review_text TEXT NOT NULL,                    
@@ -147,14 +136,5 @@ CREATE TABLE book_chapters (
     chapter_no INT NOT NULL,
     text TEXT NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
-    FOREIGN KEY (book_id) REFERENCES Book(id)
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
 );
--- remove the below fields/column from Book table.
-ALTER TABLE Book DROP COLUMN audio;
-ALTER TABLE Book DROP COLUMN text;
-
-
-
-
-
-
