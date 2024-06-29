@@ -2,6 +2,7 @@ const dotenv = require('dotenv')
 const express = require('express');
 const Database = require('./Database/Database');
 const booksRoute = require('./Routes/booksRoute')
+const usersRoute = require('./Routes/usersRoute')
 const app = express();
 
 app.use(express.json());
@@ -14,7 +15,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/books', booksRoute);
+app.use('/users', usersRoute);
 
-app.listen(PORT, () => {
+app.listen(PORT, (req,res) => {
     console.log("Listening on PORT " + PORT);
 })

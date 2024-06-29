@@ -129,11 +129,12 @@ CREATE TABLE Review (
 
 CREATE TABLE book_chapters (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     book_id INT NOT NULL,
     audio_url VARCHAR(255),
     chapter_no INT NOT NULL,
     text TEXT NOT NULL,
-    slug VARCHAR(255) NOT NULL UNIQUE,
     FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE
 );
 

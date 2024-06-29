@@ -7,12 +7,21 @@ function getPromise(executor) {
     executor(resolve, reject);
   });
 }
-function runAnyQuery(sql) {
+async function runAnyQuery(sql) {
   // These queries might run only one time, like making a table or a database so try to call them here
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("Success!");
+
+  const promise = new Promise(function (resolve, reject) {
+    con.query(sql, async function (err, result) {
+      if (result) {
+        resolve(result);
+      }
+      if (err) {
+        reject(err);
+      }
+    });
   });
+
+  return promise;
 }
 
 function getFromTable(
@@ -71,7 +80,6 @@ function getFromMultipleTables(
   return getPromise((resolve, reject) => {
     con.query(queryString, async function (err, result, fields) {
       if (result) {
-        console.log(result);
         resolve(result);
       }
       if (err) {
@@ -135,6 +143,7 @@ function deleteById(table, id) {
 
 module.exports = {
   con,
+  runAnyQuery,
   getFromTable,
   insertData,
   getFromMultipleTables,
