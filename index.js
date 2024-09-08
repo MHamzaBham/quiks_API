@@ -1,8 +1,9 @@
 const dotenv = require('dotenv')
 const express = require('express');
-const Database = require('./Database/Database');
+// const Database = require('./Database/Database');
 const booksRoute = require('./Routes/booksRoute')
 const usersRoute = require('./Routes/usersRoute')
+const authRoute = require('./Routes/authRoute');
 const cors = require('cors')
 const app = express();
 
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.use('/books', booksRoute);
 app.use('/users', usersRoute);
+app.use('/auth', authRoute);
 
 app.listen(PORT, (req,res) => {
     console.log("Listening on PORT " + PORT);

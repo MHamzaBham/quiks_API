@@ -73,9 +73,8 @@ function getFromMultipleTables(
   if (!validJoinTypes.includes(joinType.toUpperCase())) {
     return new Error("Invalid Join Type");
   }
-  const queryString = `SELECT ${columnNames} FROM ${baseTable} ${joinType.toUpperCase()} JOIN ${joinTable} ON ${joinCondition} ${
-    filterCondition ? `WHERE ${filterCondition}` : ""
-  }`;
+  const queryString = `SELECT ${columnNames} FROM ${baseTable} ${joinType.toUpperCase()} JOIN ${joinTable} ON ${joinCondition} ${filterCondition ? `WHERE ${filterCondition}` : ""
+    }`;
 
   return getPromise((resolve, reject) => {
     con.query(queryString, async function (err, result, fields) {
@@ -141,6 +140,38 @@ function deleteById(table, id) {
   return promise;
 }
 
+// get user by email
+function findByEmail(email) {
+  const queryString = `SELECT * FROM users WHERE email = '${email}'`
+  const promise = new Promise((resolve, reject) => {
+    con.query(queryString, async function (err, result) {
+      if (result) {
+        resolve(result);
+      } else {
+        reject(err);
+      }
+    })
+  })
+
+  return promise;
+}
+
+function storeUser(user) {
+  const queryString = `INSERT INTO users (name, email, password) VALUES (?, ?, ?);`
+  const promise = new Promise((resolve, reject) => {
+    con.query(queryString, [user.name, user.email, user.password], async function (err, result) {
+      if (result) {
+        console.log(result);
+        resolve(result);
+      } else {
+        reject(err);
+      }
+    })
+  })
+
+  return promise;
+}
+
 module.exports = {
   con,
   runAnyQuery,
@@ -149,4 +180,6 @@ module.exports = {
   getFromMultipleTables,
   getById,
   deleteById,
+  findByEmail,
+  storeUser
 };
