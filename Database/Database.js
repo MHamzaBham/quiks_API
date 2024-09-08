@@ -7,12 +7,21 @@ function getPromise(executor) {
     executor(resolve, reject);
   });
 }
-function runAnyQuery(sql) {
+async function runAnyQuery(sql) {
   // These queries might run only one time, like making a table or a database so try to call them here
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("Success!");
+
+  const promise = new Promise(function (resolve, reject) {
+    con.query(sql, async function (err, result) {
+      if (result) {
+        resolve(result);
+      }
+      if (err) {
+        reject(err);
+      }
+    });
   });
+
+  return promise;
 }
 
 function getFromTable(
@@ -64,14 +73,12 @@ function getFromMultipleTables(
   if (!validJoinTypes.includes(joinType.toUpperCase())) {
     return new Error("Invalid Join Type");
   }
-  const queryString = `SELECT ${columnNames} FROM ${baseTable} ${joinType.toUpperCase()} JOIN ${joinTable} ON ${joinCondition} ${
-    filterCondition ? `WHERE ${filterCondition}` : ""
-  }`;
+  const queryString = `SELECT ${columnNames} FROM ${baseTable} ${joinType.toUpperCase()} JOIN ${joinTable} ON ${joinCondition} ${filterCondition ? `WHERE ${filterCondition}` : ""
+    }`;
 
   return getPromise((resolve, reject) => {
     con.query(queryString, async function (err, result, fields) {
       if (result) {
-        console.log(result);
         resolve(result);
       }
       if (err) {
@@ -133,11 +140,46 @@ function deleteById(table, id) {
   return promise;
 }
 
+// get user by email
+function findByEmail(email) {
+  const queryString = `SELECT * FROM users WHERE email = '${email}'`
+  const promise = new Promise((resolve, reject) => {
+    con.query(queryString, async function (err, result) {
+      if (result) {
+        resolve(result);
+      } else {
+        reject(err);
+      }
+    })
+  })
+
+  return promise;
+}
+
+function storeUser(user) {
+  const queryString = `INSERT INTO users (name, email, password) VALUES (?, ?, ?);`
+  const promise = new Promise((resolve, reject) => {
+    con.query(queryString, [user.name, user.email, user.password], async function (err, result) {
+      if (result) {
+        console.log(result);
+        resolve(result);
+      } else {
+        reject(err);
+      }
+    })
+  })
+
+  return promise;
+}
+
 module.exports = {
   con,
+  runAnyQuery,
   getFromTable,
   insertData,
   getFromMultipleTables,
   getById,
   deleteById,
+  findByEmail,
+  storeUser
 };
