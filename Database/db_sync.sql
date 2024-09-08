@@ -226,3 +226,19 @@ INSERT INTO book (slug, title, excerpt, duration, rating, image, author_id) VALU
 ('the-everything-war', 'The Everything War', 'Amazon\'s Ruthless Quest to Own the World and Remake Corporate Power', 20, 4, 'https://images.blinkist.io/images/books/6662b3776507960013fdc2e8/1_1/470.jpg', 22),
 ('the-art-of-reading-minds', 'The Art of Reading Minds', 'Understand Others to Get What You Want', 15, 4.1, 'https://images.blinkist.io/images/books/66699e0687f3050008ba7c6a/1_1/470.jpg', 23),
 ('the-program', 'The Program', 'Lessons From Elite Military Units for Creating and Sustaining High Performance Leaders and Teams', 16, 4, 'https://images.blinkist.io/images/books/6669b2cc6baa0e0008df3452/1_1/470.jpg', 24);
+
+
+
+CREATE TABLE shares (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    Recipient_id INT NOT NULL,
+    Message TEXT,
+    book_id INT,
+    library_id INT,
+    date_time DATETIME,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (recipient_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES Book(id) ON DELETE CASCADE,
+    FOREIGN KEY (library_id) REFERENCES Library(id) ON DELETE CASCADE
+)

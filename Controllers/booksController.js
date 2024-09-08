@@ -1,5 +1,5 @@
 const Database = require("../Database/Database");
-const slugify = require("slugify")
+const slugify = require("slugify");
 
 // get all the books
 const getBooks = async (req, res) => {
@@ -49,7 +49,7 @@ const addBook = async (req, res) => {
   } = req.body;
 
   const slug = slugify(title, {
-    lower: true
+    lower: true,
   });
   console.log(slug);
 
@@ -83,5 +83,32 @@ const deleteBook = async (req, res) => {
     res.json({ message: "failure!", results: error });
   }
 };
+// get all categories of a book
+const getBookCategories = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400).json({ message: "No Book id is provided" });
+    }
+    const data = await Database.getFromTable(
+      "*",
+      "bookcategorymapping",
+      `WHERE book_id=${id}`
+    );
+    if (!data || data.length === 0) {
+      res.status(404).json({ message: "No Categories of this Book" });
+    }
+    res.status(200).json({ categories: data });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 
-module.exports = { getBooks, addBook, getFilteredBooks, deleteBook, getBook };
+module.exports = {
+  getBooks,
+  addBook,
+  getFilteredBooks,
+  deleteBook,
+  getBook,
+  getBookCategories,
+};
