@@ -1,5 +1,8 @@
 const Database = require("../Database/Database");
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET
 
 const signup = async (req, res) => {
     const { name, email, password } = req.body;
@@ -27,14 +30,19 @@ const signup = async (req, res) => {
         .then(async () => {
             // Get data of stored user
             data = await Database.findByEmail(email);
-            return res.json({ message: "success", data: data });
+
+            const token = jwt.sign({ userId: data[0].id, email: data[0].email }, JWT_SECRET, { expiresIn: '15d' });
+
+            const userData = { ...data[0] };
+            delete userData.password; 
+
+            return res.json({ message: "success", data: userData, token });
         })
         .catch(() => {
-            // Unable to store user
-            return res.json({message: "success", error: "Error signing up"})
+            return res.json({message: "failure", error: "Error signing up"})
         })
-    } catch (error) {
-        // Unexpected Error
+    }
+    catch (error) {
         return res.json({ message: "failure", data: "Something Went Wrong" });
     }
 }
@@ -49,7 +57,7 @@ const login = async (req, res) => {
     try {
         // find the user by email
         const data = await Database.findByEmail(email);
-        if(!(data.length > 0)) { // if no user already
+        if(!(data.length > 0)) {
             return res.json({message: "failure", error: "Email does not exist"})
         }
 
@@ -59,12 +67,33 @@ const login = async (req, res) => {
             return res.json({message: "failure", error: "Incorrect Password"})
         }
 
-        return res.json({message: "success", data: data});
+        const token = jwt.sign({ userId: data[0].id, email: data[0].email }, JWT_SECRET, { expiresIn: '15d' });
+
+        const userData = { ...data[0] };
+        delete userData.password; 
+
+        return res.json({message: "success", data: userData, token});
     }
     catch (error) {
-        // Unexpected Error
         return res.json({ message: "failure", data: "Something Went Wrong" });
     }
 }
 
-module.exports = { signup, login }
+// Middleware to verify JWT token
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+        return res.status(401).json({ message: "failure", error: "No token provided" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: "failure", error: "Invalid token" });
+    }
+}
+
+module.exports = { signup, login, verifyToken }

@@ -1,5 +1,5 @@
 const Database = require("../Database/Database");
-const slugify = require("slugify")
+const slugify = require("slugify");
 
 const getUsers = async (req, res) => {
     const data = await Database.getFromTable("*", "users");
@@ -17,7 +17,6 @@ const getUser = async (req, res) => {
     }
 };
 
-// add a book by putting data into the request body
 const addUser = async (req, res) => {
     const {
         name,
@@ -45,7 +44,6 @@ const addUser = async (req, res) => {
     }
 };
 
-// delete a book using id
 const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
@@ -57,4 +55,68 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, getUser, addUser, deleteUser };
+const updateUser = async (req, res) => {
+    const userId = req.user.userId; // From verifyToken middleware
+    const {
+        firstName,
+        lastName,
+        email,
+        profession,
+        bio,
+        profilePicUrl
+    } = req.body;
+
+    try {
+        // Build update query dynamically based on provided fields
+        let updateFields = [];
+        let values = [];
+        
+        if (firstName && lastName) {
+            updateFields.push('name = ?');
+            values.push(`${firstName} ${lastName}`);
+        }
+        if (email) {
+            updateFields.push('email = ?');
+            values.push(email);
+        }
+        if (profession) {
+            updateFields.push('profession = ?');
+            values.push(profession);
+        }
+        if (bio) {
+            updateFields.push('bio = ?');
+            values.push(bio);
+        }
+        if (profilePicUrl) {
+            updateFields.push('profile_pic = ?');
+            values.push(profilePicUrl);
+        }
+
+        if (updateFields.length === 0) {
+            return res.status(400).json({ message: "failure", error: "No fields to update" });
+        }
+
+        // Add userId for WHERE clause
+        values.push(userId);
+
+        const query = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+        await Database.runAnyQuery(query, values);
+        
+        // Fetch updated user data
+        const updatedUser = await Database.getById("users", userId);
+        
+        if (!updatedUser || updatedUser.length === 0) {
+            return res.status(404).json({ message: "failure", error: "User not found" });
+        }
+
+        const userData = { ...updatedUser[0] };
+        delete userData.password;
+
+        res.json({ message: "success", data: userData });
+    } catch (error) {
+        console.error('Update user error:', error);
+        res.status(500).json({ message: "failure", error: "Failed to update profile" });
+    }
+};
+
+module.exports = { getUsers, getUser, addUser, deleteUser, updateUser };

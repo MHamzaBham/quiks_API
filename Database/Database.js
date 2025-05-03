@@ -1,4 +1,4 @@
-const { con } = require("./DBConnection");
+const { con } = require('./DBConnection');
 
 // make functions with queries in it, use arguments to make generic functions and don't forget to export them
 
@@ -7,11 +7,9 @@ function getPromise(executor) {
     executor(resolve, reject);
   });
 }
-async function runAnyQuery(sql) {
-  // These queries might run only one time, like making a table or a database so try to call them here
-
+async function runAnyQuery(sql, params = []) {
   const promise = new Promise(function (resolve, reject) {
-    con.query(sql, async function (err, result) {
+    con.query(sql, params, async function (err, result) {
       if (result) {
         resolve(result);
       }
@@ -164,6 +162,7 @@ function storeUser(user) {
         console.log(result);
         resolve(result);
       } else {
+        console.log(err)
         reject(err);
       }
     })

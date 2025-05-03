@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+dotenv.config()
 const express = require('express');
 // const Database = require('./Database/Database');
 const booksRoute = require('./Routes/booksRoute')
@@ -8,12 +9,12 @@ const cors = require('cors')
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173"
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 app.use(express.json());
-dotenv.config()
 
-const PORT = process.env.PORT || 5001
+const PORT = process.env.PORT || 8000
 
 app.get('/', (req, res) => {
     res.json({message: "Welcome to Quiks!"})
