@@ -3,7 +3,8 @@ CREATE TABLE Users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    age INT,
+    profession TEXT,
+    password varchar(255) NOT NULL,
     profile_pic VARCHAR(255),
     bio TEXT
 );
